@@ -15,10 +15,9 @@ const sqlConfig = {
         encrypt: true
     }
 }
+const port = process.env.PORT || 5000;
 
-//tedious
-//https://docs.microsoft.com/en-us/azure/azure-sql/database/connect-query-nodejs?tabs=macos
-
+//routes
 app.get('/', (req,res) => {
     res.send('Server is up and running.')
 })
@@ -31,13 +30,12 @@ app.get('/pingSql', (req, res) => {
             console.log(err)
             res.send(`Oops. Can't connect to ${sqlConfig.server};${sqlConfig.database}`)
         }
-        
 
         let sqlRequest = new sql.Request();
-
         let sqlQuery = 'SELECT @@VERSION';
 
         sqlRequest.query(sqlQuery, (err, data) => {
+            
             if (err){
                 console.log(err)
                 res.send('Established a connection, but could not fulfil SQL request.')
@@ -49,7 +47,6 @@ app.get('/pingSql', (req, res) => {
             console.log(data.rowsAffected);
             console.log(data.recordset[0]);
             res.send('Success. Check console to confirm results of query :)')
-
         })
 
 
@@ -57,8 +54,6 @@ app.get('/pingSql', (req, res) => {
     
 })
 
-
-PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server is running on ${process.env.PORT}`)
+app.listen(port, () => {
+    console.log(`Server is running on ${port}`)
 })
