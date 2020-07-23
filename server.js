@@ -18,7 +18,7 @@ const sqlConfig = {
 const port = process.env.PORT || 5000;
 
 //routes
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
     res.send('Server is up and running.')
 })
 
@@ -55,5 +55,5 @@ app.get('/pingSql', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Server is running on ${port}`)
+    console.log(`Server is running on ${port}...`)
 })
