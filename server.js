@@ -1,6 +1,7 @@
 //setup express
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 5000;
 
 //setup mssql
 const sql = require('mssql');
@@ -15,21 +16,29 @@ const sqlConfig = {
         encrypt: true
     }
 }
-const port = process.env.PORT || 5000;
+//setup path
+const path = require('path');
 
 //routes
 app.get('/', (req, res) => {
+    console.log('/')
     res.send('Server is up and running.')
-})
+});
 
-app.get('/pingSql', (req, res) => {
+app.get('/root', (req, res) => {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+app.get('/pingSql', (req, res, next) => {
     
     sql.connect(sqlConfig, (err) => {
         
         if (err){
             console.log(err)
             res.send(`Oops. Can't connect to ${sqlConfig.server};${sqlConfig.database}`)
-        }
+            //cease code execution but keep server alive
+            return next(err)
+        };
 
         let sqlRequest = new sql.Request();
         let sqlQuery = 'SELECT @@VERSION';
@@ -39,21 +48,25 @@ app.get('/pingSql', (req, res) => {
             if (err){
                 console.log(err)
                 res.send('Established a connection, but could not fulfil SQL request.')
-            }
+            };
 
             //return SQL data
             console.log(data);
             console.table(data.recordset);
             console.log(data.rowsAffected);
             console.log(data.recordset[0]);
+            
+            //close SQL connection
+            sql.close();
+
             res.send('Success. Check console to confirm results of query :)')
-        })
+        });
 
 
-    })
+    });
     
-})
+});
 
 app.listen(port, () => {
     console.log(`Server is running on ${port}...`)
-})
+});

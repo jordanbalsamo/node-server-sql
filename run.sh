@@ -6,4 +6,4 @@ PORT=3000 SQL_USER=SA SQL_PASSWORD="<YourStrong@Passw0rd>" SQL_SERVER=localhost 
 # only including the above secrets, as they are the default suggested by the above article :)
 
 #without docker - i.e. bring your own arguments:
-PORT=3000 SQL_USER= SQL_PASSWORD= SQL_SERVER= SQL_DATABASE= node server.js
+#PORT=3000 SQL_USER= SQL_PASSWORD= SQL_SERVER= SQL_DATABASE= node server.js
