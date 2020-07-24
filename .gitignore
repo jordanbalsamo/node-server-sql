@@ -1,2 +1,7 @@
 # directories
 node_modules
+.vscode
+
+# files
+.deployment
+web.config
