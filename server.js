@@ -20,12 +20,16 @@ const sqlConfig = {
 const path = require('path');
 
 //routes
+
+//root
 app.get('/', (req, res) => {
     console.log('/')
     res.send('Server is up and running.')
 });
 
-app.get('/root', (req, res) => {
+//html
+app.get('/htmlheartbeat', (req, res) => {
+    console.log('htmlheartbeat')
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
@@ -59,7 +63,7 @@ app.get('/pingSql', (req, res, next) => {
             //close SQL connection
             sql.close();
 
-            res.send('Success. Check console to confirm results of query :)')
+            res.send('Success. Data:' + data)
         });
 
 
