@@ -22,17 +22,21 @@ const path = require('path');
 //routes
 
 //root
+//confirms that server is running.
 app.get('/', (req, res) => {
     console.log('/')
     res.send('Server is up and running.')
 });
 
-//html
+//htmlHeartbeat
+//renders an html file.
 app.get('/htmlHeartbeat', (req, res) => {
     console.log('htmlheartbeat')
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+//pingSql
+//connect to SQL server instance defined in environment variables.
 app.get('/pingSql', (req, res, next) => {
     
     sql.connect(sqlConfig, (err) => {
