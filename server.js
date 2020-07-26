@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 //html
-app.get('/htmlheartbeat', (req, res) => {
+app.get('/htmlHeartbeat', (req, res) => {
     console.log('htmlheartbeat')
     res.sendFile(path.join(__dirname + '/index.html'));
 });
