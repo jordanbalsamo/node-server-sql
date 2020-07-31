@@ -25,19 +25,19 @@ const path = require('path');
 //confirms that server is running.
 app.get('/', (req, res) => {
     console.log('/')
-    res.send('Server is up and running.')
+    res.send('Node.js server is up and running :)')
 });
 
 //htmlHeartbeat
 //renders an html file.
-app.get('/htmlHeartbeat', (req, res) => {
-    console.log('htmlHeartbeat')
-    res.sendFile(path.join(__dirname + '/index.html'));
-});
+// app.get('/htmlHeartbeat', (req, res) => {
+//     console.log('htmlHeartbeat')
+//     res.sendFile(path.join(__dirname + '/index.html'));
+// });
 
 //pingSql
 //connect to SQL server instance defined in environment variables.
-app.get('/pingSql', (req, res, next) => {
+app.get('/ping/sqldb', (req, res, next) => {
     
     sql.connect(sqlConfig, (err) => {
         
@@ -65,7 +65,7 @@ app.get('/pingSql', (req, res, next) => {
             console.log(data.recordset[0]);
             
             //write response to page
-            res.send(`Ping succeeded for ${sqlConfig.server};${sqlConfig.database}`)
+            res.send(`Connection succeeded for ${sqlConfig.server};${sqlConfig.database} :)`)
 
             //close SQL connection
             sql.close();
@@ -75,7 +75,7 @@ app.get('/pingSql', (req, res, next) => {
 
 //querySql
 //connect to SQL server instance defined in environment variables.
-app.get('/querySql', (req, res, next) => {
+app.get('/query/selectVersion', (req, res, next) => {
     
     sql.connect(sqlConfig, (err) => {
         
@@ -88,6 +88,42 @@ app.get('/querySql', (req, res, next) => {
 
         let sqlRequest = new sql.Request();
         let sqlQuery = 'SELECT @@VERSION';
+
+        sqlRequest.query(sqlQuery, (err, data) => {
+            
+            if (err){
+                console.log(err)
+                res.send('Established a connection, but could not fulfil SQL request.')
+            };
+
+            //return SQL data
+            console.log(data);
+            console.table(data.recordset);
+            console.log(data.rowsAffected);
+            console.log(data.recordset[0]);
+            
+            //write response to page
+            res.json(data)
+
+            //close SQL connection
+            sql.close();
+        });
+    });    
+});
+
+app.get('/query/selectSchema', (req, res, next) => {
+    
+    sql.connect(sqlConfig, (err) => {
+        
+        if (err){
+            console.log(err)
+            res.send(`Oops. Can't connect to ${sqlConfig.server};${sqlConfig.database}`)
+            //cease code execution but keep server alive
+            return next(err)
+        };
+
+        let sqlRequest = new sql.Request();
+        let sqlQuery = 'SELECT * FROM INFORMATION_SCHEMA.TABLES';
 
         sqlRequest.query(sqlQuery, (err, data) => {
             
