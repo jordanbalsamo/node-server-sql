@@ -22,17 +22,21 @@ const path = require('path');
 //routes
 
 //root
+//confirms that server is running.
 app.get('/', (req, res) => {
     console.log('/')
     res.send('Server is up and running.')
 });
 
-//html
-app.get('/htmlheartbeat', (req, res) => {
+//htmlHeartbeat
+//renders an html file.
+app.get('/htmlHeartbeat', (req, res) => {
     console.log('htmlheartbeat')
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+//pingSql
+//connect to SQL server instance defined in environment variables.
 app.get('/pingSql', (req, res, next) => {
     
     sql.connect(sqlConfig, (err) => {
@@ -60,15 +64,51 @@ app.get('/pingSql', (req, res, next) => {
             console.log(data.rowsAffected);
             console.log(data.recordset[0]);
             
+            //write response to page
+            res.send('Ping succeeded.')
+
             //close SQL connection
             sql.close();
-
-            res.send('Success. Data:' + data)
         });
+    });    
+});
 
-
-    });
+//querySql
+//connect to SQL server instance defined in environment variables.
+app.get('/querySql', (req, res, next) => {
     
+    sql.connect(sqlConfig, (err) => {
+        
+        if (err){
+            console.log(err)
+            res.send(`Oops. Can't connect to ${sqlConfig.server};${sqlConfig.database}`)
+            //cease code execution but keep server alive
+            return next(err)
+        };
+
+        let sqlRequest = new sql.Request();
+        let sqlQuery = 'SELECT @@VERSION';
+
+        sqlRequest.query(sqlQuery, (err, data) => {
+            
+            if (err){
+                console.log(err)
+                res.send('Established a connection, but could not fulfil SQL request.')
+            };
+
+            //return SQL data
+            console.log(data);
+            console.table(data.recordset);
+            console.log(data.rowsAffected);
+            console.log(data.recordset[0]);
+            
+            //write response to page
+            res.json(data)
+
+            //close SQL connection
+            sql.close();
+        });
+    });    
 });
 
 app.listen(port, () => {
