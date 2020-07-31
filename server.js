@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 //htmlHeartbeat
 //renders an html file.
 app.get('/htmlHeartbeat', (req, res) => {
-    console.log('htmlheartbeat')
+    console.log('htmlHeartbeat')
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
@@ -65,7 +65,7 @@ app.get('/pingSql', (req, res, next) => {
             console.log(data.recordset[0]);
             
             //write response to page
-            res.send('Ping succeeded.')
+            res.send(`Ping succeeded for ${sqlConfig.server};${sqlConfig.database}`)
 
             //close SQL connection
             sql.close();
